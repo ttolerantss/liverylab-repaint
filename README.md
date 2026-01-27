@@ -1,4 +1,4 @@
-# Livery Viewer
+# LiveryLab Repaint
 
 A Windows desktop application for livery designers to preview their work on 3D vehicle models in near real-time.
 
@@ -23,22 +23,6 @@ A Windows desktop application for livery designers to preview their work on 3D v
 2. Run `Livery Viewer Setup.exe`
 3. Follow the installation prompts
 
-### From Source
-```bash
-# Clone the repository
-git clone <repository-url>
-cd livery-viewer
-
-# Install dependencies
-npm install
-
-# Run in development mode
-npm run dev
-
-# Build installer
-npm run build
-```
-
 ## Usage
 
 1. **Select a Vehicle Model** - Use the dropdown to choose which vehicle to preview
@@ -48,73 +32,6 @@ npm run build
    - Left-drag: Rotate around the model
    - Scroll wheel: Zoom in/out
    - Right-drag: Pan the view
+   - Alt: Lock the view
 
 The green indicator next to the filename shows that the file is being watched. Any changes saved in Photoshop will automatically update the preview.
-
-## Adding New Models
-
-1. Export your model as OBJ from your source
-2. Open in Blender and clean up (remove interior, reduce detail if needed)
-3. Ensure the paint mesh is named `vehicle_generic_smallspecmap__PAINT_1`
-4. Export as glTF Binary (.glb)
-5. Place the .glb file in `src/assets/models/`
-6. Add an entry to `src/assets/models.json`:
-
-```json
-{
-  "id": "unique-model-id",
-  "name": "Model Display Name",
-  "manufacturer": "Manufacturer",
-  "year": 2024,
-  "file": "model-filename.glb",
-  "paintMesh": "vehicle_generic_smallspecmap__PAINT_1",
-  "detailMesh": null,
-  "detailTexture": null,
-  "glassMeshes": []
-}
-```
-
-7. Rebuild the application
-
-## Tech Stack
-
-- **Electron** - Desktop application framework
-- **Three.js** - 3D WebGL rendering
-- **chokidar** - File system watching
-- **psd.js** - PSD file parsing
-
-## Project Structure
-
-```
-livery-viewer/
-├── src/
-│   ├── main/           # Electron main process
-│   │   └── main.js     # App entry point, window management
-│   ├── renderer/       # UI and Three.js code
-│   │   ├── index.html  # Main HTML with UI controls
-│   │   └── renderer.js # 3D scene, PSD loading, file watching
-│   └── assets/
-│       ├── models/     # GLB model files
-│       ├── textures/   # Detail textures (optional)
-│       └── models.json # Model configuration
-├── dist/               # Build output (generated)
-├── package.json
-└── README.md
-```
-
-## Development
-
-```bash
-# Run in development mode
-npm run dev
-
-# Build unpacked (for testing)
-npm run build:dir
-
-# Build installer
-npm run build
-```
-
-## License
-
-ISC

@@ -1,0 +1,172 @@
+{
+  "models": [
+    {
+      "id": "2003-chevy-impala",
+      "name": "Impala",
+      "manufacturer": "Raz3r",
+      "year": 2003,
+      "file": "2003-chevy-impala.glb",
+      "paintMesh": "vehicle_generic_smallspecmap__PAINT_1",
+      "detailMesh": null,
+      "detailTexture": null,
+      "glassMeshes": [],
+      "link": ""
+    },
+    {
+      "id": "2014-dodge-charger",
+      "name": "Charger Pursuit",
+      "manufacturer": "GeorgieMoon",
+      "year": 2014,
+      "file": "2014-dodge-charger.glb",
+      "paintMesh": "vehicle_generic_smallspecmap__PAINT_1",
+      "detailMesh": null,
+      "detailTexture": null,
+      "glassMeshes": [],
+      "link": "https://georgiemoonmodifications.com/products/2011-2014-dodge-charger-pursuit-package"
+    },
+    {
+      "id": "2016-ford-fpiu",
+      "name": "Police Interceptor Utility",
+      "manufacturer": "GeorgieMoon",
+      "year": 2016,
+      "file": "2016-ford-fpiu.glb",
+      "paintMesh": "vehicle_generic_smallspecmap__PAINT_1",
+      "detailMesh": null,
+      "detailTexture": null,
+      "glassMeshes": [],
+      "link": "https://georgiemoonmodifications.com/products/2016-2019-police-utility"
+    },
+    {
+      "id": "2016-ford-fpis",
+      "name": "Police Interceptor Sedan",
+      "manufacturer": "GeorgieMoon",
+      "year": 2016,
+      "file": "2016-ford-fpis.glb",
+      "paintMesh": "vehicle_generic_smallspecmap__PAINT_1",
+      "detailMesh": null,
+      "detailTexture": null,
+      "glassMeshes": [],
+      "link": "https://georgiemoonmodifications.com/products/2015-2019-ford-police-interceptor-sedan"
+    },
+    {
+      "id": "2020-dodge-charger",
+      "name": "Charger Pursuit",
+      "manufacturer": "GeorgieMoon",
+      "year": 2020,
+      "file": "2020-dodge-charger.glb",
+      "paintMesh": "vehicle_generic_smallspecmap__PAINT_1",
+      "detailMesh": "Material.001",
+      "detailTexture": null,
+      "glassMeshes": [],
+      "link": "https://georgiemoonmodifications.com/products/2018-2023-police-pursuit-package"
+    },
+    {
+      "id": "2018-ford-f150",
+      "name": "F-150 Police Responder",
+      "manufacturer": "GeorgieMoon",
+      "year": 2018,
+      "file": "2018-ford-f150.glb",
+      "paintMesh": "vehicle_generic_smallspecmap__PAINT_1",
+      "detailMesh": null,
+      "detailTexture": null,
+      "glassMeshes": [],
+      "link": "https://georgiemoonmodifications.com/products/2018-2020-ford-f-150-police-responder-crew-cab"
+    },
+    {
+      "id": "2020-chevy-tahoe",
+      "name": "Tahoe PPV",
+      "manufacturer": "GeorgieMoon",
+      "year": 2020,
+      "file": "2020-chevy-tahoe.glb",
+      "paintMesh": "vehicle_generic_smallspecmap__PAINT_1",
+      "detailMesh": null,
+      "detailTexture": null,
+      "glassMeshes": [],
+      "link": "https://georgiemoonmodifications.com/products/2015-2020-chevrolet-tahoe-ppv"
+    },
+    {
+      "id": "2020-chevy-express",
+      "name": "Express Van",
+      "manufacturer": "Raz3r",
+      "year": 2020,
+      "file": "2020-chevy-express.glb",
+      "paintMesh": "vehicle_generic_smallspecmap__PAINT_1",
+      "detailMesh": null,
+      "detailTexture": null,
+      "glassMeshes": [],
+      "link": ""
+    },
+    {
+      "id": "2021-chevy-tahoe-massman",
+      "name": "Tahoe PPV (MassMan's Edit)",
+      "manufacturer": "Raz3r",
+      "year": 2021,
+      "file": "2021-chevy-tahoe-massman.glb",
+      "paintMesh": "vehicle_generic_smallspecmap__PAINT_1",
+      "detailMesh": null,
+      "detailTexture": null,
+      "glassMeshes": [],
+      "link": ""
+    },
+        {
+      "id": "2021-ford-f150-massman",
+      "name": "F-150 Police Responder (MassMan's Edit)",
+      "manufacturer": "Raz3r",
+      "year": 2021,
+      "file": "2021-ford-f150-massman.glb",
+      "paintMesh": "vehicle_generic_smallspecmap__PAINT_1",
+      "detailMesh": null,
+      "detailTexture": null,
+      "glassMeshes": [],
+      "link": ""
+    },
+    {
+      "id": "2023-chevy-silverado-walkuh",
+      "name": "Silverado PPV (Walkuh's Edit)",
+      "manufacturer": "Raz3r",
+      "year": 2023,
+      "file": "2023-chevy-silverado-walkuh.glb",
+      "paintMesh": "vehicle_generic_smallspecmap__PAINT_1",
+      "detailMesh": null,
+      "detailTexture": null,
+      "glassMeshes": [],
+      "link": ""
+    },
+    {
+      "id": "2024-ford-mustang-walkuh",
+      "name": "Mustang (Walkuh's Edit)",
+      "manufacturer": "Raz3r",
+      "year": 2024,
+      "file": "2024-ford-mustang-walkuh.glb",
+      "paintMesh": "vehicle_generic_smallspecmap__PAINT_1",
+      "detailMesh": null,
+      "detailTexture": null,
+      "glassMeshes": [],
+      "link": ""
+    },
+    {
+      "id": "2025-ford-expedition",
+      "name": "Expedition SSV",
+      "manufacturer": "Raz3r",
+      "year": 2025,
+      "file": "2025-ford-expedition.glb",
+      "paintMesh": "vehicle_generic_smallspecmap__PAINT_1",
+      "detailMesh": null,
+      "detailTexture": null,
+      "glassMeshes": [],
+      "link": ""
+    },
+    {
+      "id": "2021-dodge-durango",
+      "name": "Durango Pursuit",
+      "manufacturer": "GeorgieMoon",
+      "year": 2021,
+      "file": "2021-dodge-durango.glb",
+      "paintMesh": "vehicle_generic_smallspecmap__PAINT_1",
+      "detailMesh": null,
+      "detailTexture": null,
+      "glassMeshes": [],
+      "link": "https://georgiemoonmodifications.com/products/2021-2024-police-pursuit-package"
+    }
+  ]
+}

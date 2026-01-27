@@ -1,0 +1,40 @@
+{
+  "name": "liverylab-repaint-installer",
+  "version": "1.0.1",
+  "description": "Custom installer for LiveryLab Repaint",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "start:uninstall": "electron . --uninstall",
+    "build": "electron-builder --win"
+  },
+  "devDependencies": {
+    "electron": "^40.0.0",
+    "electron-builder": "^26.4.0"
+  },
+  "build": {
+    "appId": "com.liverylab.repaint.installer",
+    "productName": "LiveryLab Repaint Setup",
+    "icon": "src/assets/logol.ico",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "payload/**/*"
+    ],
+    "asar": false,
+    "win": {
+      "target": [
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
+      ],
+      "signAndEditExecutable": false
+    },
+    "portable": {
+      "artifactName": "LiveryLab Repaint Setup ${version}.exe"
+    }
+  }
+}

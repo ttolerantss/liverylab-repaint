@@ -1,0 +1,27 @@
+# Dependencies
+node_modules/
+installer/node_modules/
+
+# Build outputs
+dist/
+installer/dist/
+installer/payload/
+
+# Bundled files (generated)
+src/renderer/renderer.bundle.js
+
+# Model files (stored on R2)
+src/assets/models/*.glb
+
+# Environment and secrets
+.env
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp

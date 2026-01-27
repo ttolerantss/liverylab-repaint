@@ -1,0 +1,5 @@
+{
+  "Endpoint": "https://eus.codesigning.azure.net/",
+  "CodeSigningAccountName": "liverylab-signing",
+  "CertificateProfileName": "liverylab-private"
+}

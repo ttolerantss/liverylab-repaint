@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://api.keygen.sh https://pub-2bbfe8dc75c745f39f4505f0d26ce9bd.r2.dev">
+  <title>LiveryLab Repaint</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: #1a1a1a;
+      color: #ffffff;
+      overflow: hidden;
+    }
+
+
+    canvas {
+      display: block;
+    }
+
+    #view-controls {
+      position: absolute;
+      top: 52px;
+      right: 16px;
+      display: flex;
+      gap: 8px;
+      z-index: 100;
+    }
+
+    #view-indicator {
+      background: rgba(0, 0, 0, 0.7);
+      color: #fff;
+      padding: 8px 16px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      pointer-events: none;
+    }
+
+    #reset-camera-btn {
+      background: rgba(0, 0, 0, 0.7);
+      color: #888;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: color 0.15s, background 0.15s;
+      font-family: inherit;
+    }
+
+    #reset-camera-btn:hover {
+      color: #fff;
+      background: rgba(0, 0, 0, 0.85);
+    }
+
+    #controls {
+      position: absolute;
+      top: 52px;
+      left: 16px;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 16px;
+      border-radius: 8px;
+      min-width: 280px;
+      z-index: 100;
+    }
+
+    #controls-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      gap: 16px;
+    }
+
+    #logo {
+      height: 24px;
+      width: auto;
+      flex-shrink: 0;
+    }
+
+    #toggle-btn {
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      background: transparent;
+      border: 1px solid #444;
+      color: #888;
+      font-size: 16px;
+      line-height: 1;
+      cursor: pointer;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #toggle-btn:hover {
+      background: #333;
+      color: #fff;
+      border-color: #555;
+    }
+
+    #controls.collapsed {
+      min-width: auto;
+    }
+
+    #controls.collapsed #controls-content {
+      display: none;
+    }
+
+    #controls.collapsed #toggle-btn {
+      transform: rotate(180deg);
+    }
+
+    .control-group {
+      margin-bottom: 12px;
+    }
+
+    .control-group label {
+      display: block;
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 4px;
+    }
+
+    button {
+      background: #1868da;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 13px;
+      width: 100%;
+    }
+
+    button:hover {
+      background: #2878ea;
+    }
+
+    #psd-path {
+      font-size: 11px;
+      color: #888;
+      margin-top: 8px;
+      word-break: break-all;
+    }
+
+    .color-picker-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    input[type="range"] {
+      flex: 1;
+      height: 4px;
+      -webkit-appearance: none;
+      appearance: none;
+      background: #333;
+      border-radius: 2px;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      background: #fff;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: transform 0.1s;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+    }
+
+    input[type="color"] {
+      width: 48px;
+      height: 32px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      background: none;
+      padding: 0;
+    }
+
+    input[type="color"]::-webkit-color-swatch-wrapper {
+      padding: 0;
+    }
+
+    input[type="color"]::-webkit-color-swatch {
+      border: 1px solid #555;
+      border-radius: 4px;
+    }
+
+    #color-hex,
+    #bg-color-hex {
+      font-size: 12px;
+      color: #aaa;
+      font-family: monospace;
+    }
+
+    .reset-btn {
+      font-size: 12px;
+      color: #666;
+      cursor: pointer;
+      margin-left: auto;
+      padding: 2px 6px;
+      border-radius: 3px;
+      transition: color 0.15s, background 0.15s;
+    }
+
+    .reset-btn:hover {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    select {
+      width: 100%;
+      padding: 8px;
+      border-radius: 4px;
+      border: 1px solid #444;
+      background: #2a2a2a;
+      color: #fff;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    select:focus {
+      outline: none;
+      border-color: #1868da;
+    }
+
+    select option {
+      background: #2a2a2a;
+      padding: 8px;
+    }
+
+    select optgroup {
+      background: #1a1a1a;
+      color: #888;
+      font-style: normal;
+    }
+
+    .status-indicator {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 6px;
+      background: #666;
+    }
+
+    .status-indicator.watching {
+      background: #4caf50;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.5; }
+    }
+
+    .psd-status {
+      display: flex;
+      align-items: center;
+      font-size: 11px;
+      color: #888;
+      margin-top: 8px;
+    }
+
+    .help-text {
+      font-size: 10px;
+      color: #555;
+      margin-top: 16px;
+      padding-top: 12px;
+      border-top: 1px solid #333;
+    }
+
+    .help-text p {
+      margin-bottom: 4px;
+    }
+
+    .control-group:last-of-type {
+      margin-bottom: 0;
+    }
+
+    #footer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 24px;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 100;
+    }
+
+    .footer-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .footer-copyright {
+      font-size: 11px;
+      color: #E9EDF5;
+    }
+
+    .footer-branding {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      color: #E9EDF5;
+      letter-spacing: 0.5px;
+    }
+
+    .footer-branding a {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+    }
+
+    .footer-branding img {
+      height: 10px;
+      width: auto;
+    }
+
+    .footer-right {
+      display: flex;
+      gap: 16px;
+    }
+
+    .footer-right a {
+      font-size: 11px;
+      color: #E9EDF5;
+      text-decoration: none;
+    }
+
+    .footer-right a:hover {
+      text-decoration: underline;
+    }
+
+    /* Login Screen Styles */
+    #login-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: #0f0f10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    /* Background gradient layers */
+    .login-bg-bottom {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(ellipse 100% 100% at center,
+        #053473 0%,
+        #002351 20%,
+        transparent 50%
+      );
+      z-index: 0;
+    }
+
+    .login-bg-top {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: radial-gradient(ellipse 100% 100% at top right,
+        #030E26 0%,
+        transparent 70%
+      );
+      z-index: 1;
+    }
+
+    #login-screen.hidden {
+      display: none;
+    }
+
+    .login-container {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      padding: 40px;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 12px;
+      border: 1px solid #333;
+      min-width: 360px;
+    }
+
+    .login-logo {
+      height: 48px;
+      width: auto;
+      margin-bottom: 8px;
+    }
+
+    .login-title {
+      font-size: 14px;
+      color: #888;
+      font-weight: 400;
+      margin-top: -16px;
+    }
+
+    .login-form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .login-form label {
+      font-size: 12px;
+      color: #888;
+      margin-bottom: -8px;
+    }
+
+    .login-form input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      border-radius: 4px;
+      border: 1px solid #444;
+      background: #2a2a2a;
+      color: #fff;
+      font-size: 14px;
+      font-family: monospace;
+    }
+
+    .login-form input[type="text"]:focus {
+      outline: none;
+      border-color: #1868da;
+    }
+
+    .login-form input[type="text"]::placeholder {
+      color: #555;
+    }
+
+    .login-error {
+      font-size: 12px;
+      color: #e74c3c;
+      text-align: center;
+      min-height: 18px;
+    }
+
+    .login-buttons {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .login-buttons button {
+      padding: 12px 16px;
+      font-size: 14px;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1px solid #444;
+      color: #888;
+    }
+
+    .btn-secondary:hover {
+      background: #333;
+      color: #fff;
+      border-color: #555;
+    }
+
+    .login-footer {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 2;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 24px;
+      background: transparent;
+    }
+
+    .footer-center {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    #app-container.hidden {
+      display: none;
+    }
+
+    .subscribe-btn {
+      display: block;
+      text-align: center;
+      padding: 12px 16px;
+      font-size: 14px;
+      background: transparent;
+      border: 1px solid #444;
+      color: #888;
+      text-decoration: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+
+    .subscribe-btn:hover {
+      background: #333;
+      color: #fff;
+      border-color: #555;
+    }
+
+    .skip-link {
+      font-size: 11px;
+      color: #666;
+      cursor: pointer;
+      margin-top: 4px;
+    }
+
+    .skip-link:hover {
+      color: #888;
+    }
+
+    .download-container {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 24px;
+      padding: 40px;
+      background: rgba(0, 0, 0, 0.4);
+      border-radius: 12px;
+      border: 1px solid #333;
+      min-width: 360px;
+    }
+
+    .download-progress-container {
+      width: 100%;
+    }
+
+    .download-progress-bar {
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .download-progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #1868da, #2878ea);
+      border-radius: 3px;
+      width: 0%;
+      transition: width 0.3s;
+    }
+
+    .download-status {
+      font-size: 12px;
+      color: #888;
+      margin-top: 12px;
+      text-align: center;
+    }
+
+    .version-text {
+      font-size: 11px;
+      color: #666;
+      margin-top: 4px;
+    }
+
+    .model-link {
+      font-size: 11px;
+      color: #888;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .model-link:hover {
+      color: #aaa;
+      text-decoration: underline;
+    }
+
+    /* Error Modal */
+    .error-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 20000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s, visibility 0.2s;
+    }
+
+    .error-modal-overlay.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .error-modal {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 12px;
+      padding: 24px;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+    }
+
+    .error-modal-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .error-modal-icon {
+      width: 24px;
+      height: 24px;
+      background: #e74c3c;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .error-modal-icon svg {
+      width: 14px;
+      height: 14px;
+      stroke: #fff;
+      stroke-width: 2;
+      fill: none;
+    }
+
+    .error-modal-content {
+      font-size: 13px;
+      color: #888;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    .error-modal-content ul {
+      margin: 12px 0 0 0;
+      padding-left: 20px;
+    }
+
+    .error-modal-content li {
+      margin-bottom: 6px;
+    }
+
+    .error-modal-btn {
+      width: 100%;
+      padding: 10px 16px;
+      background: #333;
+      border: 1px solid #444;
+      color: #fff;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .error-modal-btn:hover {
+      background: #444;
+    }
+
+    /* Custom Title Bar - macOS Style */
+    .titlebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 36px;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      padding-right: 12px;
+      z-index: 10000;
+      user-select: none;
+      transition: background 0.2s;
+    }
+
+    .titlebar.solid {
+      background: #1a1a1a;
+    }
+
+    .titlebar-drag {
+      flex: 1;
+      height: 100%;
+      -webkit-app-region: drag;
+    }
+
+    .titlebar-controls {
+      display: flex;
+      gap: 8px;
+      -webkit-app-region: no-drag;
+    }
+
+    .titlebar-btn {
+      width: 14px;
+      height: 14px;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: filter 0.15s;
+      padding: 0;
+      -webkit-app-region: no-drag;
+      position: relative;
+      z-index: 10001;
+    }
+
+    .titlebar-btn:hover {
+      filter: brightness(0.85);
+    }
+
+    .titlebar-btn.close {
+      background: #ff5f57;
+    }
+
+    .titlebar-btn.minimize {
+      background: #febc2e;
+    }
+
+    .titlebar-btn.maximize {
+      background: #28c840;
+    }
+
+    .titlebar-btn svg {
+      width: 8px;
+      height: 8px;
+      stroke: rgba(0, 0, 0, 0.4);
+      stroke-width: 2;
+      fill: none;
+      opacity: 0;
+      transition: opacity 0.15s;
+    }
+
+    .titlebar-controls:hover .titlebar-btn svg {
+      opacity: 1;
+    }
+
+    /* Update notification */
+    #update-notification {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(30, 30, 30, 0.95);
+      border: 1px solid #444;
+      border-radius: 8px;
+      padding: 16px;
+      z-index: 10000;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateY(20px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .update-content {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .update-content span {
+      color: #fff;
+      font-size: 13px;
+    }
+
+    .update-content button {
+      background: #3b82f6;
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s;
+    }
+
+    .update-content button:hover {
+      background: #2563eb;
+    }
+
+    #update-dismiss-btn, #update-later-btn {
+      background: transparent;
+      border: 1px solid #444;
+      color: #888;
+    }
+
+    #update-dismiss-btn:hover, #update-later-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    .update-progress-bar {
+      width: 150px;
+      height: 4px;
+      background: #333;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .update-progress-fill {
+      height: 100%;
+      background: #3b82f6;
+      transition: width 0.3s ease;
+    }
+  </style>
+</head>
+<body>
+  <!-- Custom Title Bar - macOS Style -->
+  <div class="titlebar">
+    <div class="titlebar-drag"></div>
+    <div class="titlebar-controls">
+      <button class="titlebar-btn minimize" id="min-btn">
+        <svg viewBox="0 0 12 12">
+          <line x1="2" y1="6" x2="10" y2="6"/>
+        </svg>
+      </button>
+      <button class="titlebar-btn maximize" id="max-btn">
+        <svg viewBox="0 0 12 12">
+          <polyline points="4,2 10,2 10,8"/>
+          <polyline points="8,10 2,10 2,4"/>
+        </svg>
+      </button>
+      <button class="titlebar-btn close" id="close-btn">
+        <svg viewBox="0 0 12 12">
+          <line x1="3" y1="3" x2="9" y2="9"/>
+          <line x1="9" y1="3" x2="3" y2="9"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Login Screen -->
+  <div id="login-screen">
+    <div class="login-bg-bottom"></div>
+    <div class="login-bg-top"></div>
+    <div class="login-container">
+      <img src="../assets/logo.svg" alt="LiveryLab" class="login-logo">
+      <div class="login-title">Enter your license key to activate</div>
+      <div class="login-form">
+        <label>License Key</label>
+        <input type="text" id="license-key-input" placeholder="XXXX-XXXX-XXXX-XXXX">
+        <div class="login-error" id="login-error"></div>
+      </div>
+      <div class="login-buttons">
+        <button id="activate-btn">Activate License</button>
+        <a href="https://danielswork.shop" class="subscribe-btn">Subscribe for Access</a>
+      </div>
+    </div>
+
+    <!-- Download Progress (shown after license validation) -->
+    <div class="download-container" id="download-container" style="display: none;">
+      <img src="../assets/logo.svg" alt="LiveryLab" class="login-logo">
+      <div class="login-title" id="download-title">Downloading Assets</div>
+      <div class="download-progress-container">
+        <div class="download-progress-bar">
+          <div class="download-progress-fill" id="download-progress-fill"></div>
+        </div>
+        <div class="download-status" id="download-status">Preparing download...</div>
+      </div>
+    </div>
+
+    <div class="login-footer">
+      <div class="footer-left">
+        <div class="footer-copyright">LiveryLab · © 2026 All rights reserved</div>
+        <div class="footer-branding">
+          <span>A</span>
+          <a href="https://danielswork.shop"><img src="../assets/dw.svg" alt="DW"></a>
+          <span>PROJECT</span>
+        </div>
+      </div>
+      <div class="footer-center">
+        <span class="version-text">Repaint v1.0.0</span>
+      </div>
+      <div class="footer-right">
+        <a href="https://liverylab.framer.website/static/privacy-policy">Privacy Policy</a>
+        <a href="https://liverylab.framer.website/static/terms-of-service">Terms of Service</a>
+        <a href="#" class="licensing-link">Licensing</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main App Container -->
+  <div id="app-container" class="hidden">
+  <!-- View controls -->
+  <div id="view-controls">
+    <button id="reset-camera-btn" title="Reset camera position">Reset</button>
+    <div id="view-indicator">Perspective</div>
+  </div>
+  <div id="controls">
+    <div id="controls-header">
+      <img src="../assets/logo.svg" alt="Logo" id="logo">
+      <button id="toggle-btn" title="Minimize panel">&#9650;</button>
+    </div>
+    <div id="controls-content">
+      <div class="control-group">
+        <label>Vehicle Model</label>
+        <select id="model-select">
+          <option value="">Loading models...</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label>Texture</label>
+        <button id="select-psd-btn">Select File</button>
+        <div class="psd-status">
+          <span class="status-indicator" id="watch-indicator"></span>
+          <span id="psd-path">No file selected</span>
+          <span id="reset-psd-btn" class="reset-btn" title="Clear texture">&#10005;</span>
+        </div>
+      </div>
+      <div class="control-group">
+        <label>Body Color</label>
+        <div class="color-picker-row">
+          <input type="color" id="body-color" value="#ffffff">
+          <span id="color-hex">#FFFFFF</span>
+          <span id="reset-body-color-btn" class="reset-btn" title="Reset to white">&#8635;</span>
+        </div>
+      </div>
+      <div class="control-group">
+        <label>Glossiness <span id="gloss-value">0</span></label>
+        <div class="slider-row">
+          <input type="range" id="glossiness-slider" min="0" max="100" step="5" value="0">
+          <span id="reset-gloss-btn" class="reset-btn" title="Reset to 0">&#8635;</span>
+        </div>
+      </div>
+      <div class="control-group">
+        <label>Background Color</label>
+        <div class="color-picker-row">
+          <input type="color" id="bg-color" value="#1e1e1e">
+          <span id="bg-color-hex">#1E1E1E</span>
+          <span id="reset-bg-color-btn" class="reset-btn" title="Reset to default">&#8635;</span>
+        </div>
+      </div>
+      <div class="help-text">
+        <p>Left-drag: Rotate</p>
+        <p>Scroll: Zoom</p>
+        <p>Right-drag: Pan</p>
+        <p>Alt: Lock View</p>
+      </div>
+    </div>
+  </div>
+  <div id="footer">
+    <div class="footer-left">
+      <div class="footer-copyright">LiveryLab · © 2026 All rights reserved</div>
+      <div class="footer-branding">
+        <span>A</span>
+        <a href="https://danielswork.shop"><img src="../assets/dw.svg" alt="DW"></a>
+        <span>PROJECT</span>
+      </div>
+    </div>
+    <div class="footer-center">
+      <a id="model-link" class="model-link" href="#">Select a model</a>
+    </div>
+    <div class="footer-right">
+      <a href="https://liverylab.framer.website/static/privacy-policy">Privacy Policy</a>
+      <a href="https://liverylab.framer.website/static/terms-of-service">Terms of Service</a>
+      <a href="#" class="licensing-link">Licensing</a>
+    </div>
+  </div>
+  </div><!-- End app-container -->
+
+  <!-- Error Modal -->
+  <div class="error-modal-overlay" id="error-modal-overlay">
+    <div class="error-modal">
+      <div class="error-modal-title">
+        <div class="error-modal-icon">
+          <svg viewBox="0 0 24 24">
+            <line x1="18" y1="6" x2="6" y2="18"/>
+            <line x1="6" y1="6" x2="18" y2="18"/>
+          </svg>
+        </div>
+        <span id="error-modal-title-text">Error</span>
+      </div>
+      <div class="error-modal-content" id="error-modal-content"></div>
+      <button class="error-modal-btn" id="error-modal-close-btn">OK</button>
+    </div>
+  </div>
+
+  <script>require('./renderer.bundle.js');</script>
+</body>
+</html>

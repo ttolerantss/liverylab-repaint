@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+  <title>LiveryLab Repaint Setup</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: #0f0f10;
+      color: #fff;
+      height: 100vh;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    /* Gradient backgrounds */
+    .gradient-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .gradient-1 {
+      background: radial-gradient(ellipse 100% 100% at 50% 0%, #053473 0%, transparent 70%);
+    }
+
+    .gradient-2 {
+      background: radial-gradient(ellipse 100% 100% at 50% 100%, #002351 0%, transparent 70%);
+    }
+
+    /* Custom title bar */
+    .titlebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 36px;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 12px;
+      z-index: 10000;
+      -webkit-app-region: drag;
+    }
+
+    .titlebar-controls {
+      display: flex;
+      gap: 8px;
+      -webkit-app-region: no-drag;
+    }
+
+    .titlebar-btn {
+      width: 14px;
+      height: 14px;
+      border: none;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0;
+      -webkit-app-region: no-drag;
+    }
+
+    .titlebar-btn.minimize { background: #febc2e; }
+    .titlebar-btn.close { background: #ff5f57; }
+
+    .titlebar-btn svg {
+      width: 8px;
+      height: 8px;
+      stroke: rgba(0, 0, 0, 0.4);
+      stroke-width: 2;
+      fill: none;
+      opacity: 0;
+    }
+
+    .titlebar-controls:hover .titlebar-btn svg {
+      opacity: 1;
+    }
+
+    /* Main content */
+    .container {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      padding: 60px 40px 40px;
+    }
+
+    .logo {
+      width: 200px;
+      margin-bottom: 24px;
+    }
+
+    .title {
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      color: #fff;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 32px;
+    }
+
+    /* Install location */
+    .install-location {
+      width: 100%;
+      max-width: 400px;
+      margin-bottom: 24px;
+    }
+
+    .install-location label {
+      display: block;
+      font-size: 12px;
+      color: #888;
+      margin-bottom: 8px;
+    }
+
+    .location-row {
+      display: flex;
+      gap: 8px;
+    }
+
+    .location-input {
+      flex: 1;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 6px;
+      padding: 10px 14px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 13px;
+    }
+
+    .location-input:focus {
+      outline: none;
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    .browse-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 6px;
+      padding: 10px 16px;
+      color: #fff;
+      font-family: inherit;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .browse-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    /* Progress bar */
+    .progress-container {
+      width: 100%;
+      max-width: 400px;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .progress-container.visible {
+      display: block;
+    }
+
+    .progress-bar {
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #053473, #0066cc);
+      border-radius: 3px;
+      width: 0%;
+      transition: width 0.3s;
+    }
+
+    .progress-status {
+      font-size: 12px;
+      color: #888;
+      margin-top: 8px;
+      text-align: center;
+    }
+
+    /* Buttons */
+    .buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .btn {
+      padding: 12px 32px;
+      border-radius: 6px;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+
+    .btn-primary {
+      background: #fff;
+      color: #000;
+    }
+
+    .btn-primary:hover {
+      background: #e0e0e0;
+    }
+
+    .btn-primary:disabled {
+      background: #666;
+      color: #999;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: #888;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .btn-secondary:hover {
+      color: #fff;
+      border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    /* Complete screen */
+    .complete-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #053473, #0066cc);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+
+    .complete-icon svg {
+      width: 32px;
+      height: 32px;
+      stroke: #fff;
+      stroke-width: 3;
+      fill: none;
+    }
+
+    /* Screens */
+    .screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+    }
+
+    .screen.active {
+      display: flex;
+    }
+
+    /* Footer */
+    .footer {
+      position: fixed;
+      bottom: 16px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      font-size: 11px;
+      color: #555;
+      z-index: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="gradient-bg gradient-1"></div>
+  <div class="gradient-bg gradient-2"></div>
+
+  <div class="titlebar">
+    <div class="titlebar-controls">
+      <button class="titlebar-btn minimize" id="min-btn">
+        <svg viewBox="0 0 12 12"><line x1="2" y1="6" x2="10" y2="6"/></svg>
+      </button>
+      <button class="titlebar-btn close" id="close-btn">
+        <svg viewBox="0 0 12 12">
+          <line x1="3" y1="3" x2="9" y2="9"/>
+          <line x1="9" y1="3" x2="3" y2="9"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="container">
+    <!-- Install Screen -->
+    <div class="screen active" id="install-screen">
+      <img src="../assets/logo.svg" alt="LiveryLab" class="logo">
+      <div class="title">Install LiveryLab Repaint</div>
+      <div class="subtitle" id="version-text">Version 1.0.1</div>
+
+      <div class="install-location" id="location-container">
+        <label>Installation Location</label>
+        <div class="location-row">
+          <input type="text" class="location-input" id="install-path" readonly>
+          <button class="browse-btn" id="browse-btn">Browse</button>
+        </div>
+      </div>
+
+      <div class="progress-container" id="progress-container">
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+        <div class="progress-status" id="progress-status">Preparing...</div>
+      </div>
+
+      <div class="buttons" id="install-buttons">
+        <button class="btn btn-secondary" id="cancel-btn">Cancel</button>
+        <button class="btn btn-primary" id="install-btn">Install</button>
+      </div>
+    </div>
+
+    <!-- Uninstall Screen -->
+    <div class="screen" id="uninstall-screen">
+      <img src="../assets/logo.svg" alt="LiveryLab" class="logo">
+      <div class="title">Uninstall LiveryLab Repaint</div>
+      <div class="subtitle">This will remove LiveryLab Repaint from your computer.</div>
+
+      <div class="progress-container" id="uninstall-progress-container">
+        <div class="progress-bar">
+          <div class="progress-fill" id="uninstall-progress-fill"></div>
+        </div>
+        <div class="progress-status" id="uninstall-progress-status">Preparing...</div>
+      </div>
+
+      <div class="buttons" id="uninstall-buttons">
+        <button class="btn btn-secondary" id="uninstall-cancel-btn">Cancel</button>
+        <button class="btn btn-primary" id="uninstall-btn">Uninstall</button>
+      </div>
+    </div>
+
+    <!-- Complete Screen -->
+    <div class="screen" id="complete-screen">
+      <div class="complete-icon">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <div class="title" id="complete-title">Installation Complete!</div>
+      <div class="subtitle" id="complete-subtitle">LiveryLab Repaint has been installed successfully.</div>
+
+      <div class="buttons">
+        <button class="btn btn-primary" id="finish-btn">Launch App</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">LiveryLab Repaint Installer</div>
+
+  <script>
+    const { ipcRenderer } = require('electron');
+
+    let installPath = '';
+    let installedExePath = '';
+    let isUninstallMode = false;
+
+    // Initialize
+    ipcRenderer.on('init', (event, data) => {
+      isUninstallMode = data.isUninstall;
+      installPath = data.defaultPath;
+
+      document.getElementById('version-text').textContent = `Version ${data.appVersion}`;
+      document.getElementById('install-path').value = installPath;
+
+      if (isUninstallMode) {
+        document.getElementById('install-screen').classList.remove('active');
+        document.getElementById('uninstall-screen').classList.add('active');
+      }
+    });
+
+    // Title bar controls
+    document.getElementById('min-btn').addEventListener('click', () => {
+      ipcRenderer.send('minimize-window');
+    });
+
+    document.getElementById('close-btn').addEventListener('click', () => {
+      ipcRenderer.send('close-window');
+    });
+
+    // Browse button
+    document.getElementById('browse-btn').addEventListener('click', async () => {
+      const result = await ipcRenderer.invoke('browse-location');
+      if (result) {
+        installPath = result + '\\LiveryLab Repaint';
+        document.getElementById('install-path').value = installPath;
+      }
+    });
+
+    // Cancel buttons
+    document.getElementById('cancel-btn').addEventListener('click', () => {
+      ipcRenderer.send('close-window');
+    });
+
+    document.getElementById('uninstall-cancel-btn').addEventListener('click', () => {
+      ipcRenderer.send('close-window');
+    });
+
+    // Install button
+    document.getElementById('install-btn').addEventListener('click', async () => {
+      const installBtn = document.getElementById('install-btn');
+      const cancelBtn = document.getElementById('cancel-btn');
+      const browseBtn = document.getElementById('browse-btn');
+      const progressContainer = document.getElementById('progress-container');
+      const locationContainer = document.getElementById('location-container');
+
+      installBtn.disabled = true;
+      installBtn.textContent = 'Installing...';
+      cancelBtn.style.display = 'none';
+      browseBtn.disabled = true;
+      progressContainer.classList.add('visible');
+      locationContainer.style.opacity = '0.5';
+
+      const result = await ipcRenderer.invoke('install', installPath);
+
+      if (result.success) {
+        installedExePath = result.exePath;
+        document.getElementById('install-screen').classList.remove('active');
+        document.getElementById('complete-screen').classList.add('active');
+        document.getElementById('complete-title').textContent = 'Installation Complete!';
+        document.getElementById('complete-subtitle').textContent = 'LiveryLab Repaint has been installed successfully.';
+        document.getElementById('finish-btn').textContent = 'Launch App';
+      } else {
+        alert('Installation failed: ' + result.error);
+        installBtn.disabled = false;
+        installBtn.textContent = 'Install';
+        cancelBtn.style.display = 'block';
+        browseBtn.disabled = false;
+        progressContainer.classList.remove('visible');
+        locationContainer.style.opacity = '1';
+      }
+    });
+
+    // Uninstall button
+    document.getElementById('uninstall-btn').addEventListener('click', async () => {
+      const uninstallBtn = document.getElementById('uninstall-btn');
+      const cancelBtn = document.getElementById('uninstall-cancel-btn');
+      const progressContainer = document.getElementById('uninstall-progress-container');
+
+      uninstallBtn.disabled = true;
+      uninstallBtn.textContent = 'Uninstalling...';
+      cancelBtn.style.display = 'none';
+      progressContainer.classList.add('visible');
+
+      const result = await ipcRenderer.invoke('uninstall');
+
+      if (result.success) {
+        document.getElementById('uninstall-screen').classList.remove('active');
+        document.getElementById('complete-screen').classList.add('active');
+        document.getElementById('complete-title').textContent = 'Uninstallation Complete!';
+        document.getElementById('complete-subtitle').textContent = 'LiveryLab Repaint has been removed from your computer.';
+        document.getElementById('finish-btn').textContent = 'Close';
+        installedExePath = ''; // Don't launch on uninstall
+      } else {
+        alert('Uninstallation failed: ' + result.error);
+        uninstallBtn.disabled = false;
+        uninstallBtn.textContent = 'Uninstall';
+        cancelBtn.style.display = 'block';
+        progressContainer.classList.remove('visible');
+      }
+    });
+
+    // Progress updates
+    ipcRenderer.on('install-progress', (event, data) => {
+      const isUninstall = document.getElementById('uninstall-screen').classList.contains('active');
+      const fillId = isUninstall ? 'uninstall-progress-fill' : 'progress-fill';
+      const statusId = isUninstall ? 'uninstall-progress-status' : 'progress-status';
+
+      document.getElementById(fillId).style.width = data.percent + '%';
+      document.getElementById(statusId).textContent = data.status;
+    });
+
+    // Finish button
+    document.getElementById('finish-btn').addEventListener('click', () => {
+      if (installedExePath) {
+        ipcRenderer.send('launch-app', installedExePath);
+      } else {
+        ipcRenderer.send('close-window');
+      }
+    });
+  </script>
+</body>
+</html>

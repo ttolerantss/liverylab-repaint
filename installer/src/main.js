@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain, shell, dialog } = require('electron');
 const path = require('path');
-const fs = require('fs');
+// Use original fs module to avoid Electron's asar interception
+const fs = require('original-fs');
 const { execSync, spawn } = require('child_process');
 
 // Check if running in uninstall mode

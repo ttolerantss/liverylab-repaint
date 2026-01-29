@@ -1015,12 +1015,15 @@ function applyDetailTexture(detailMeshName, detailTexturePath) {
   });
 }
 
-// Populate model selector dropdown
+// Populate model selector dropdown (both native and custom)
 function populateModelSelector() {
   const select = document.getElementById('model-select');
+  const customOptions = document.getElementById('model-select-options');
+
   if (!select) return;
 
   select.innerHTML = '';
+  if (customOptions) customOptions.innerHTML = '';
 
   // Group models by manufacturer
   const byManufacturer = {};
@@ -1036,14 +1039,44 @@ function populateModelSelector() {
     const optgroup = document.createElement('optgroup');
     optgroup.label = manufacturer;
 
-    byManufacturer[manufacturer]
-      .sort((a, b) => a.year - b.year)
-      .forEach(model => {
-        const option = document.createElement('option');
-        option.value = model.id;
-        option.textContent = `${model.year} ${model.name}`;
-        optgroup.appendChild(option);
-      });
+    // Custom dropdown group
+    if (customOptions) {
+      const groupDiv = document.createElement('div');
+      groupDiv.className = 'custom-select-group';
+
+      const groupLabel = document.createElement('div');
+      groupLabel.className = 'custom-select-group-label';
+      groupLabel.textContent = manufacturer;
+      groupDiv.appendChild(groupLabel);
+
+      byManufacturer[manufacturer]
+        .sort((a, b) => a.year - b.year)
+        .forEach(model => {
+          // Native option
+          const option = document.createElement('option');
+          option.value = model.id;
+          option.textContent = `${model.year} ${model.name}`;
+          optgroup.appendChild(option);
+
+          // Custom option
+          const customOption = document.createElement('div');
+          customOption.className = 'custom-select-option';
+          customOption.dataset.value = model.id;
+          customOption.textContent = `${model.year} ${model.name}`;
+          groupDiv.appendChild(customOption);
+        });
+
+      customOptions.appendChild(groupDiv);
+    } else {
+      byManufacturer[manufacturer]
+        .sort((a, b) => a.year - b.year)
+        .forEach(model => {
+          const option = document.createElement('option');
+          option.value = model.id;
+          option.textContent = `${model.year} ${model.name}`;
+          optgroup.appendChild(option);
+        });
+    }
 
     select.appendChild(optgroup);
   });
@@ -1051,7 +1084,89 @@ function populateModelSelector() {
   // Select the current model
   if (currentModelId) {
     select.value = currentModelId;
+    updateCustomSelectValue(currentModelId);
   }
+}
+
+// Update custom select display value
+function updateCustomSelectValue(modelId) {
+  const trigger = document.getElementById('model-select-trigger');
+  const options = document.querySelectorAll('.custom-select-option');
+
+  if (!trigger) return;
+
+  const modelConfig = getModelConfig(modelId);
+  if (modelConfig) {
+    const valueSpan = trigger.querySelector('.custom-select-value');
+    if (valueSpan) {
+      valueSpan.textContent = `${modelConfig.year} ${modelConfig.name}`;
+    }
+  }
+
+  // Update selected state on options
+  options.forEach(opt => {
+    opt.classList.toggle('selected', opt.dataset.value === modelId);
+  });
+}
+
+// Initialize custom select dropdown behavior
+function initCustomSelect() {
+  const container = document.getElementById('model-select-container');
+  const trigger = document.getElementById('model-select-trigger');
+  const dropdown = document.getElementById('model-select-dropdown');
+  const optionsContainer = document.getElementById('model-select-options');
+
+  if (!container || !trigger || !dropdown) return;
+
+  // Toggle dropdown on trigger click
+  trigger.addEventListener('click', (e) => {
+    e.stopPropagation();
+    container.classList.toggle('open');
+
+    // Scroll selected option into view when opening
+    if (container.classList.contains('open')) {
+      const selected = optionsContainer.querySelector('.custom-select-option.selected');
+      if (selected) {
+        selected.scrollIntoView({ block: 'nearest' });
+      }
+    }
+  });
+
+  // Handle option selection
+  optionsContainer.addEventListener('click', (e) => {
+    const option = e.target.closest('.custom-select-option');
+    if (option) {
+      const modelId = option.dataset.value;
+      if (modelId) {
+        // Update native select
+        const select = document.getElementById('model-select');
+        if (select) select.value = modelId;
+
+        // Update custom select display
+        updateCustomSelectValue(modelId);
+
+        // Close dropdown
+        container.classList.remove('open');
+
+        // Trigger model switch
+        switchModel(modelId);
+      }
+    }
+  });
+
+  // Close dropdown when clicking outside
+  document.addEventListener('click', (e) => {
+    if (!container.contains(e.target)) {
+      container.classList.remove('open');
+    }
+  });
+
+  // Close dropdown on escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && container.classList.contains('open')) {
+      container.classList.remove('open');
+    }
+  });
 }
 
 // Initialize models on startup
@@ -1450,21 +1565,26 @@ document.addEventListener('DOMContentLoaded', () => {
   // Populate model selector
   populateModelSelector();
 
+  // Initialize custom select dropdown
+  initCustomSelect();
+
   // Load default model using switchModel (applies body color properly)
   if (defaultModelId) {
     const modelSelect = document.getElementById('model-select');
     if (modelSelect) {
       modelSelect.value = defaultModelId;
     }
+    updateCustomSelectValue(defaultModelId);
     switchModel(defaultModelId);
   }
 
-  // Model selector event listener
+  // Model selector event listener (native select fallback)
   const modelSelect = document.getElementById('model-select');
   if (modelSelect) {
     modelSelect.addEventListener('change', (e) => {
       const modelId = e.target.value;
       if (modelId) {
+        updateCustomSelectValue(modelId);
         switchModel(modelId);
       }
     });
@@ -2010,6 +2130,187 @@ function showUpdateReady(version) {
     });
   }
 }
+
+// Help Modal functionality
+function initHelpModal() {
+  const overlay = document.getElementById('help-modal-overlay');
+  const closeBtn = document.getElementById('help-modal-close');
+  const navItems = document.querySelectorAll('.help-nav-item');
+  const content = document.querySelector('.help-modal-content');
+  const copyBtn = document.getElementById('copy-license-key');
+
+  if (!overlay) return;
+
+  // Open/close functions
+  function openHelpModal() {
+    overlay.classList.add('visible');
+    populateHelpModalData();
+  }
+
+  function closeHelpModal() {
+    overlay.classList.remove('visible');
+  }
+
+  // Close button
+  if (closeBtn) {
+    closeBtn.addEventListener('click', closeHelpModal);
+  }
+
+  // Close on overlay click (outside modal)
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) {
+      closeHelpModal();
+    }
+  });
+
+  // Close on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && overlay.classList.contains('visible')) {
+      closeHelpModal();
+    }
+  });
+
+  // Ctrl+H to toggle help modal
+  document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.key.toLowerCase() === 'h') {
+      e.preventDefault();
+      if (overlay.classList.contains('visible')) {
+        closeHelpModal();
+      } else {
+        openHelpModal();
+      }
+    }
+  });
+
+  // Navigation clicks - smooth scroll to section
+  navItems.forEach(item => {
+    item.addEventListener('click', (e) => {
+      e.preventDefault();
+      const targetId = item.getAttribute('href').substring(1);
+      const targetSection = document.getElementById(targetId);
+
+      if (targetSection && content) {
+        targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        // Update active state
+        navItems.forEach(nav => nav.classList.remove('active'));
+        item.classList.add('active');
+      }
+    });
+  });
+
+  // Update active nav item on scroll
+  if (content) {
+    content.addEventListener('scroll', () => {
+      const sections = document.querySelectorAll('.help-section');
+      let currentSection = '';
+
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop - content.offsetTop;
+        if (content.scrollTop >= sectionTop - 50) {
+          currentSection = section.id;
+        }
+      });
+
+      navItems.forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('href') === '#' + currentSection) {
+          item.classList.add('active');
+        }
+      });
+    });
+  }
+
+  // Copy license key button
+  if (copyBtn) {
+    copyBtn.addEventListener('click', async () => {
+      const licenseInput = document.getElementById('user-license-key');
+      if (licenseInput && licenseInput.value && licenseInput.value !== 'Loading...' && licenseInput.value !== 'Not activated') {
+        try {
+          await navigator.clipboard.writeText(licenseInput.value);
+          copyBtn.classList.add('copied');
+          setTimeout(() => copyBtn.classList.remove('copied'), 1500);
+        } catch (err) {
+          console.error('Failed to copy:', err);
+        }
+      }
+    });
+  }
+}
+
+// Populate help modal with user data and version info
+async function populateHelpModalData() {
+  // User details
+  const licenseKeyInput = document.getElementById('user-license-key');
+  const machineNameEl = document.getElementById('user-machine-name');
+  const activatedDateEl = document.getElementById('user-activated-date');
+
+  const savedLicense = loadLicenseData();
+
+  if (savedLicense) {
+    if (licenseKeyInput) {
+      licenseKeyInput.value = savedLicense.licenseKey || 'Unknown';
+    }
+    if (machineNameEl) {
+      machineNameEl.textContent = os.hostname() || 'Unknown';
+    }
+    if (activatedDateEl && savedLicense.activatedAt) {
+      const date = new Date(savedLicense.activatedAt);
+      activatedDateEl.textContent = date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    }
+  } else {
+    if (licenseKeyInput) licenseKeyInput.value = 'Not activated';
+    if (machineNameEl) machineNameEl.textContent = os.hostname() || 'Unknown';
+    if (activatedDateEl) activatedDateEl.textContent = 'Not activated';
+  }
+
+  // Version info
+  const versionEl = document.getElementById('help-app-version');
+  const changelogEl = document.getElementById('help-changelog-content');
+
+  // Get app version from package.json via electron
+  if (versionEl && ipcRenderer) {
+    try {
+      const appVersion = await ipcRenderer.invoke('get-app-version');
+      versionEl.textContent = 'v' + appVersion;
+    } catch (err) {
+      // Fallback - try to read from the DOM or use a default
+      versionEl.textContent = 'v1.0.1';
+    }
+  }
+
+  // Fetch changelog from models-manifest.json
+  if (changelogEl) {
+    try {
+      const response = await fetch(MODELS_MANIFEST_URL);
+      if (response.ok) {
+        const manifest = await response.json();
+        if (manifest.changelog) {
+          changelogEl.innerHTML = manifest.changelog
+            .split('\n')
+            .map(line => `<p>${line}</p>`)
+            .join('');
+        } else if (manifest.version) {
+          changelogEl.innerHTML = `<p>Version ${manifest.version} - Latest release</p>`;
+        }
+      } else {
+        changelogEl.innerHTML = '<p>Unable to load changelog.</p>';
+      }
+    } catch (err) {
+      console.error('Failed to fetch changelog:', err);
+      changelogEl.innerHTML = '<p>Unable to load changelog.</p>';
+    }
+  }
+}
+
+// Initialize help modal when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+  initHelpModal();
+});
 
 // Export for use in other modules
 module.exports = {

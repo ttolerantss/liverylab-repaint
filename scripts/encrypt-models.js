@@ -59,7 +59,7 @@ for (const file of files) {
 // Create a zip of encrypted models
 console.log('\nCreating encrypted models archive...');
 const { execSync } = require('child_process');
-const zipPath = path.join(__dirname, '..', 'dist', 'models-encrypted.zip');
+const zipPath = path.join(__dirname, '..', 'dist', 'models.zip');
 
 // Remove old zip if exists
 if (fs.existsSync(zipPath)) {
@@ -69,4 +69,4 @@ if (fs.existsSync(zipPath)) {
 execSync(`powershell Compress-Archive -Path "${outputDir}\\*" -DestinationPath "${zipPath}"`, { stdio: 'inherit' });
 
 console.log(`\nDone! Encrypted archive: ${zipPath}`);
-console.log('\nUpload this file to Cloudflare R2 to replace models.zip');
+console.log('\nUpload this file to Cloudflare R2 as models.zip');

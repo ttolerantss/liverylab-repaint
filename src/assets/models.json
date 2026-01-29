@@ -10,7 +10,19 @@
       "detailMesh": null,
       "detailTexture": null,
       "glassMeshes": [],
-      "link": ""
+      "link": "https://www.patreon.com/raz3r"
+    },
+    {
+      "id": "2013-ford-fpiu",
+      "name": "Police Interceptor Utility",
+      "manufacturer": "GeorgieMoon",
+      "year": 2013,
+      "file": "2013-ford-fpiu.glb",
+      "paintMesh": "vehicle_generic_smallspecmap__PAINT_1",
+      "detailMesh": null,
+      "detailTexture": null,
+      "glassMeshes": [],
+      "link": "https://georgiemoonmodifications.com/products/2013-2015-police-interceptor-utility"
     },
     {
       "id": "2014-dodge-charger",
@@ -73,6 +85,18 @@
       "link": "https://georgiemoonmodifications.com/products/2018-2020-ford-f-150-police-responder-crew-cab"
     },
     {
+      "id": "2018-ford-f150-ext",
+      "name": "F-150 Extended Cab",
+      "manufacturer": "GeorgieMoon",
+      "year": 2018,
+      "file": "2018-ford-f150-ext.glb",
+      "paintMesh": "vehicle_generic_smallspecmap__PAINT_1",
+      "detailMesh": null,
+      "detailTexture": null,
+      "glassMeshes": [],
+      "link": "https://georgiemoonmodifications.com/products/2018-2020-ford-f-150-police-responder-extended-cab"
+    },
+    {
       "id": "2020-chevy-tahoe",
       "name": "Tahoe PPV",
       "manufacturer": "GeorgieMoon",
@@ -94,7 +118,7 @@
       "detailMesh": null,
       "detailTexture": null,
       "glassMeshes": [],
-      "link": ""
+      "link": "https://www.patreon.com/raz3r"
     },
     {
       "id": "2021-chevy-tahoe-massman",
@@ -106,9 +130,33 @@
       "detailMesh": null,
       "detailTexture": null,
       "glassMeshes": [],
-      "link": ""
+      "link": "https://www.patreon.com/raz3r"
     },
-        {
+    {
+      "id": "2021-chevy-tahoe-r",
+      "name": "Tahoe PPV",
+      "manufacturer": "Raz3r",
+      "year": 2021,
+      "file": "2021-chevy-tahoe-r.glb",
+      "paintMesh": "vehicle_generic_smallspecmap__PAINT_1",
+      "detailMesh": null,
+      "detailTexture": null,
+      "glassMeshes": [],
+      "link": "https://www.patreon.com/raz3r"
+    },
+    {
+      "id": "2022-ford-transit",
+      "name": "Ford Transit",
+      "manufacturer": "Raz3r",
+      "year": 2022,
+      "file": "2022-ford-transit.glb",
+      "paintMesh": "vehicle_generic_smallspecmap__PAINT_1",
+      "detailMesh": null,
+      "detailTexture": null,
+      "glassMeshes": [],
+      "link": "https://www.patreon.com/raz3r"
+    },
+    {
       "id": "2021-ford-f150-massman",
       "name": "F-150 Police Responder (MassMan's Edit)",
       "manufacturer": "Raz3r",
@@ -118,7 +166,7 @@
       "detailMesh": null,
       "detailTexture": null,
       "glassMeshes": [],
-      "link": ""
+      "link": "https://www.patreon.com/raz3r"
     },
     {
       "id": "2023-chevy-silverado-walkuh",
@@ -130,7 +178,7 @@
       "detailMesh": null,
       "detailTexture": null,
       "glassMeshes": [],
-      "link": ""
+      "link": "https://www.patreon.com/raz3r"
     },
     {
       "id": "2024-ford-mustang-walkuh",
@@ -142,7 +190,7 @@
       "detailMesh": null,
       "detailTexture": null,
       "glassMeshes": [],
-      "link": ""
+      "link": "https://www.patreon.com/raz3r"
     },
     {
       "id": "2025-ford-expedition",
@@ -154,7 +202,7 @@
       "detailMesh": null,
       "detailTexture": null,
       "glassMeshes": [],
-      "link": ""
+      "link": "https://www.patreon.com/raz3r"
     },
     {
       "id": "2021-dodge-durango",

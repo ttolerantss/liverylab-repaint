@@ -1,6 +1,6 @@
 {
   "name": "liverylab-repaint",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A Windows desktop application for livery designers to preview their work on 3D vehicle models in near real-time",
   "main": "src/main/main.js",
   "scripts": {
@@ -43,7 +43,8 @@
     "asar": true,
     "asarUnpack": [
       "**/*.node",
-      "**/node_modules/psd/**/*"
+      "**/node_modules/psd/**/*",
+      "**/src/assets/*.ico"
     ],
     "files": [
       "src/**/*",

@@ -15,6 +15,7 @@ function getAssetPath(assetName) {
   // Try multiple possible paths
   const possiblePaths = [
     path.join(__dirname, '../assets', assetName),  // Development
+    path.join(process.resourcesPath, 'app.asar.unpacked', 'src', 'assets', assetName),  // Unpacked from asar
     path.join(process.resourcesPath, 'app', 'src', 'assets', assetName),  // Packaged without asar
     path.join(app.getAppPath(), 'src', 'assets', assetName),  // Alternative packaged path
   ];

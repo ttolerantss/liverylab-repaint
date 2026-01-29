@@ -260,6 +260,139 @@
       font-style: normal;
     }
 
+    /* Custom Select Dropdown */
+    .custom-select {
+      position: relative;
+      width: 100%;
+    }
+
+    .custom-select-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      background: #2a2a2a;
+      border: 1px solid #444;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: border-color 0.15s, background 0.15s;
+    }
+
+    .custom-select-trigger:hover {
+      background: #333;
+      border-color: #555;
+    }
+
+    .custom-select.open .custom-select-trigger {
+      border-color: #1868da;
+      background: #333;
+    }
+
+    .custom-select-value {
+      font-size: 13px;
+      color: #fff;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .custom-select-arrow {
+      color: #888;
+      flex-shrink: 0;
+      margin-left: 8px;
+      transition: transform 0.2s;
+    }
+
+    .custom-select.open .custom-select-arrow {
+      transform: rotate(180deg);
+    }
+
+    .custom-select-dropdown {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0;
+      right: 0;
+      background: #252525;
+      border: 1px solid #444;
+      border-radius: 6px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-8px);
+      transition: opacity 0.15s, transform 0.15s, visibility 0.15s;
+      z-index: 1000;
+      overflow: hidden;
+    }
+
+    .custom-select.open .custom-select-dropdown {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .custom-select-options {
+      max-height: 320px;
+      overflow-y: auto;
+      padding: 4px;
+    }
+
+    .custom-select-options::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .custom-select-options::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .custom-select-options::-webkit-scrollbar-thumb {
+      background: #444;
+      border-radius: 3px;
+    }
+
+    .custom-select-options::-webkit-scrollbar-thumb:hover {
+      background: #555;
+    }
+
+    .custom-select-group {
+      margin-bottom: 2px;
+    }
+
+    .custom-select-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .custom-select-group-label {
+      padding: 5px 8px 3px;
+      font-size: 10px;
+      font-weight: 600;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .custom-select-option {
+      padding: 5px 8px;
+      font-size: 12px;
+      color: #ccc;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: background 0.1s, color 0.1s;
+    }
+
+    .custom-select-option:hover {
+      background: #333;
+      color: #fff;
+    }
+
+    .custom-select-option.selected {
+      background: #1868da;
+      color: #fff;
+    }
+
+    .custom-select-option.selected:hover {
+      background: #2070e8;
+    }
+
     .status-indicator {
       display: inline-block;
       width: 8px;
@@ -860,6 +993,420 @@
       background: #3b82f6;
       transition: width 0.3s ease;
     }
+
+    /* Help Modal */
+    .help-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.75);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 15000;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s, visibility 0.2s;
+    }
+
+    .help-modal-overlay.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .help-modal {
+      display: flex;
+      width: 720px;
+      height: 520px;
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 12px;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      position: relative;
+      transform: scale(0.95);
+      transition: transform 0.2s;
+    }
+
+    .help-modal-overlay.visible .help-modal {
+      transform: scale(1);
+    }
+
+    .help-modal-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 32px;
+      height: 32px;
+      background: transparent;
+      border: none;
+      color: #666;
+      cursor: pointer;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, color 0.15s;
+      z-index: 10;
+    }
+
+    .help-modal-close:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+    }
+
+    /* Sidebar */
+    .help-modal-sidebar {
+      width: 180px;
+      background: #151515;
+      border-right: 1px solid #2a2a2a;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+
+    .help-modal-nav {
+      flex: 1;
+      padding: 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .help-nav-item {
+      padding: 10px 12px;
+      font-size: 13px;
+      color: #888;
+      text-decoration: none;
+      border-radius: 6px;
+      transition: background 0.15s, color 0.15s;
+    }
+
+    .help-nav-item:hover {
+      background: rgba(255, 255, 255, 0.05);
+      color: #bbb;
+    }
+
+    .help-nav-item.active {
+      background: rgba(24, 104, 218, 0.15);
+      color: #4a9eff;
+    }
+
+    .help-modal-shortcut {
+      padding: 16px;
+      border-top: 1px solid #2a2a2a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 11px;
+      color: #555;
+    }
+
+    .shortcut-key {
+      display: inline-block;
+      padding: 3px 6px;
+      background: #2a2a2a;
+      border: 1px solid #3a3a3a;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 500;
+      color: #888;
+      font-family: inherit;
+    }
+
+    /* Content Area */
+    .help-modal-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px 32px;
+    }
+
+    .help-modal-content::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .help-modal-content::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .help-modal-content::-webkit-scrollbar-thumb {
+      background: #333;
+      border-radius: 4px;
+    }
+
+    .help-modal-content::-webkit-scrollbar-thumb:hover {
+      background: #444;
+    }
+
+    .help-section {
+      margin-bottom: 32px;
+    }
+
+    .help-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .help-section-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #2a2a2a;
+    }
+
+    .help-section-body {
+      font-size: 13px;
+      color: #aaa;
+      line-height: 1.6;
+    }
+
+    /* User Details */
+    .user-detail-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #222;
+    }
+
+    .user-detail-row label {
+      font-size: 12px;
+      color: #666;
+      font-weight: 500;
+    }
+
+    .user-detail-value {
+      font-size: 13px;
+      color: #ccc;
+    }
+
+    .license-key-display {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .license-key-display input {
+      width: 200px;
+      padding: 6px 10px;
+      background: #222;
+      border: 1px solid #333;
+      border-radius: 4px;
+      color: #666;
+      font-size: 12px;
+      font-family: monospace;
+      letter-spacing: 0.5px;
+    }
+
+    .copy-btn {
+      width: 30px;
+      height: 30px;
+      background: #2a2a2a;
+      border: 1px solid #3a3a3a;
+      border-radius: 4px;
+      color: #888;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+
+    .copy-btn:hover {
+      background: #333;
+      color: #fff;
+      border-color: #444;
+    }
+
+    .copy-btn.copied {
+      background: #1a4d1a;
+      border-color: #2a6a2a;
+      color: #4ade80;
+    }
+
+    .user-detail-notice {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-top: 16px;
+      padding: 12px;
+      background: rgba(255, 200, 50, 0.08);
+      border: 1px solid rgba(255, 200, 50, 0.2);
+      border-radius: 6px;
+      font-size: 12px;
+      color: #b89a3a;
+    }
+
+    .user-detail-notice svg {
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    /* Keybinds */
+    .keybind-group {
+      margin-bottom: 20px;
+    }
+
+    .keybind-group:last-child {
+      margin-bottom: 0;
+    }
+
+    .keybind-group h3 {
+      font-size: 11px;
+      font-weight: 600;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 10px;
+    }
+
+    .keybind-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 0;
+      border-bottom: 1px solid #222;
+    }
+
+    .keybind-row:last-child {
+      border-bottom: none;
+    }
+
+    .keybind-action {
+      color: #aaa;
+    }
+
+    .keybind-keys {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      color: #666;
+      font-size: 12px;
+    }
+
+    /* Version Info */
+    .version-current {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: #222;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+
+    .version-label {
+      font-size: 12px;
+      color: #888;
+    }
+
+    .version-number {
+      font-size: 14px;
+      font-weight: 600;
+      color: #4a9eff;
+    }
+
+    .version-changelog h3 {
+      font-size: 12px;
+      font-weight: 600;
+      color: #888;
+      margin-bottom: 12px;
+    }
+
+    .changelog-content {
+      padding: 12px;
+      background: #1f1f1f;
+      border: 1px solid #2a2a2a;
+      border-radius: 6px;
+      font-size: 12px;
+      color: #999;
+      max-height: 150px;
+      overflow-y: auto;
+    }
+
+    .changelog-content p {
+      margin-bottom: 8px;
+    }
+
+    .changelog-content p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Docs */
+    .docs-placeholder {
+      color: #666;
+      font-style: italic;
+    }
+
+    /* Legal */
+    .legal-links {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .legal-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      background: #222;
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+      color: #aaa;
+      text-decoration: none;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+
+    .legal-link:hover {
+      background: #2a2a2a;
+      border-color: #3a3a3a;
+      color: #fff;
+    }
+
+    .legal-link svg {
+      color: #666;
+      flex-shrink: 0;
+    }
+
+    .legal-link:hover svg {
+      color: #888;
+    }
+
+    .help-modal-footer {
+      margin-top: 32px;
+      padding-top: 20px;
+      border-top: 1px solid #2a2a2a;
+      text-align: center;
+      font-size: 11px;
+      color: #555;
+    }
+
+    .help-modal-branding {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      margin-top: 6px;
+      font-size: 10px;
+      color: #444;
+      letter-spacing: 0.5px;
+    }
+
+    .help-modal-branding a {
+      display: flex;
+      align-items: center;
+    }
+
+    .help-modal-branding img {
+      height: 10px;
+      width: auto;
+      opacity: 0.5;
+    }
   </style>
 </head>
 <body>
@@ -952,7 +1499,20 @@
     <div id="controls-content">
       <div class="control-group">
         <label>Vehicle Model</label>
-        <select id="model-select">
+        <div class="custom-select" id="model-select-container">
+          <div class="custom-select-trigger" id="model-select-trigger">
+            <span class="custom-select-value">Loading models...</span>
+            <svg class="custom-select-arrow" viewBox="0 0 12 12" width="12" height="12">
+              <polyline points="2,4 6,8 10,4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="custom-select-dropdown" id="model-select-dropdown">
+            <div class="custom-select-options" id="model-select-options">
+              <!-- Options populated by JS -->
+            </div>
+          </div>
+        </div>
+        <select id="model-select" style="display: none;">
           <option value="">Loading models...</option>
         </select>
       </div>
@@ -993,6 +1553,7 @@
         <p>Scroll: Zoom</p>
         <p>Right-drag: Pan</p>
         <p>Alt: Lock View</p>
+        <p>Ctrl+H: Help</p>
       </div>
     </div>
   </div>
@@ -1030,6 +1591,206 @@
       </div>
       <div class="error-modal-content" id="error-modal-content"></div>
       <button class="error-modal-btn" id="error-modal-close-btn">OK</button>
+    </div>
+  </div>
+
+  <!-- Help Modal -->
+  <div class="help-modal-overlay" id="help-modal-overlay">
+    <div class="help-modal">
+      <!-- Close Button -->
+      <button class="help-modal-close" id="help-modal-close">
+        <svg viewBox="0 0 24 24" width="20" height="20">
+          <line x1="18" y1="6" x2="6" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <line x1="6" y1="6" x2="18" y2="18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </button>
+
+      <!-- Sidebar Navigation -->
+      <div class="help-modal-sidebar">
+        <div class="help-modal-nav">
+          <a href="#help-section-user" class="help-nav-item active" data-section="user">User Details</a>
+          <a href="#help-section-keybinds" class="help-nav-item" data-section="keybinds">Keybinds</a>
+          <a href="#help-section-version" class="help-nav-item" data-section="version">Version Info</a>
+          <a href="#help-section-docs" class="help-nav-item" data-section="docs">Docs</a>
+          <a href="#help-section-legal" class="help-nav-item" data-section="legal">Legal</a>
+        </div>
+        <div class="help-modal-shortcut">
+          <span class="shortcut-key">Ctrl</span> + <span class="shortcut-key">H</span>
+        </div>
+      </div>
+
+      <!-- Content Area -->
+      <div class="help-modal-content">
+        <!-- User Details Section -->
+        <section id="help-section-user" class="help-section">
+          <h2 class="help-section-title">User Details</h2>
+          <div class="help-section-body">
+            <div class="user-detail-row">
+              <label>License Key</label>
+              <div class="license-key-display">
+                <input type="text" id="user-license-key" readonly value="Loading...">
+                <button class="copy-btn" id="copy-license-key" title="Copy to clipboard">
+                  <svg viewBox="0 0 24 24" width="16" height="16">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="user-detail-row">
+              <label>Machine Name</label>
+              <span id="user-machine-name" class="user-detail-value">Loading...</span>
+            </div>
+            <div class="user-detail-row">
+              <label>Activated On</label>
+              <span id="user-activated-date" class="user-detail-value">Loading...</span>
+            </div>
+            <div class="user-detail-notice">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="16" x2="12" y2="12"/>
+                <line x1="12" y1="8" x2="12.01" y2="8"/>
+              </svg>
+              <span>Once a license key is activated on a machine, it cannot be transferred to another machine.</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Keybinds Section -->
+        <section id="help-section-keybinds" class="help-section">
+          <h2 class="help-section-title">Keybinds</h2>
+          <div class="help-section-body">
+            <div class="keybind-group">
+              <h3>Camera Controls</h3>
+              <div class="keybind-row">
+                <span class="keybind-action">Rotate View</span>
+                <span class="keybind-keys">Left Mouse Drag</span>
+              </div>
+              <div class="keybind-row">
+                <span class="keybind-action">Pan View</span>
+                <span class="keybind-keys">Right Mouse Drag</span>
+              </div>
+              <div class="keybind-row">
+                <span class="keybind-action">Zoom</span>
+                <span class="keybind-keys">Scroll Wheel</span>
+              </div>
+            </div>
+            <div class="keybind-group">
+              <h3>View Modes</h3>
+              <div class="keybind-row">
+                <span class="keybind-action">Front View</span>
+                <span class="keybind-keys"><span class="shortcut-key">1</span></span>
+              </div>
+              <div class="keybind-row">
+                <span class="keybind-action">Back View</span>
+                <span class="keybind-keys"><span class="shortcut-key">Ctrl</span> + <span class="shortcut-key">1</span></span>
+              </div>
+              <div class="keybind-row">
+                <span class="keybind-action">Right View</span>
+                <span class="keybind-keys"><span class="shortcut-key">3</span></span>
+              </div>
+              <div class="keybind-row">
+                <span class="keybind-action">Left View</span>
+                <span class="keybind-keys"><span class="shortcut-key">Ctrl</span> + <span class="shortcut-key">3</span></span>
+              </div>
+              <div class="keybind-row">
+                <span class="keybind-action">Top View</span>
+                <span class="keybind-keys"><span class="shortcut-key">7</span></span>
+              </div>
+              <div class="keybind-row">
+                <span class="keybind-action">Bottom View</span>
+                <span class="keybind-keys"><span class="shortcut-key">9</span></span>
+              </div>
+              <div class="keybind-row">
+                <span class="keybind-action">Perspective View</span>
+                <span class="keybind-keys"><span class="shortcut-key">0</span></span>
+              </div>
+              <div class="keybind-row">
+                <span class="keybind-action">Toggle Ortho/Perspective</span>
+                <span class="keybind-keys"><span class="shortcut-key">5</span></span>
+              </div>
+              <div class="keybind-row">
+                <span class="keybind-action">Lock to Nearest Axis</span>
+                <span class="keybind-keys"><span class="shortcut-key">Alt</span></span>
+              </div>
+            </div>
+            <div class="keybind-group">
+              <h3>General</h3>
+              <div class="keybind-row">
+                <span class="keybind-action">Open Help</span>
+                <span class="keybind-keys"><span class="shortcut-key">Ctrl</span> + <span class="shortcut-key">H</span></span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Version Info Section -->
+        <section id="help-section-version" class="help-section">
+          <h2 class="help-section-title">Version Info</h2>
+          <div class="help-section-body">
+            <div class="version-current">
+              <span class="version-label">Current Version</span>
+              <span class="version-number" id="help-app-version">v1.0.0</span>
+            </div>
+            <div class="version-changelog">
+              <h3>Changelog</h3>
+              <div id="help-changelog-content" class="changelog-content">
+                <p>Loading changelog...</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Docs Section -->
+        <section id="help-section-docs" class="help-section">
+          <h2 class="help-section-title">Documentation</h2>
+          <div class="help-section-body">
+            <p class="docs-placeholder">Documentation content coming soon. This section will contain guides and tutorials for using LiveryLab Repaint effectively.</p>
+          </div>
+        </section>
+
+        <!-- Legal Section -->
+        <section id="help-section-legal" class="help-section">
+          <h2 class="help-section-title">Legal</h2>
+          <div class="help-section-body">
+            <div class="legal-links">
+              <a href="https://liverylab.framer.website/static/privacy-policy" class="legal-link">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                </svg>
+                Privacy Policy
+              </a>
+              <a href="https://liverylab.framer.website/static/terms-of-service" class="legal-link">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                  <polyline points="14 2 14 8 20 8"/>
+                  <line x1="16" y1="13" x2="8" y2="13"/>
+                  <line x1="16" y1="17" x2="8" y2="17"/>
+                  <polyline points="10 9 9 9 8 9"/>
+                </svg>
+                Terms of Service
+              </a>
+              <a href="#" class="legal-link licensing-link">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                </svg>
+                End User License Agreement
+              </a>
+            </div>
+          </div>
+        </section>
+
+        <!-- Footer -->
+        <div class="help-modal-footer">
+          <div>LiveryLab · © 2026 All rights reserved</div>
+          <div class="help-modal-branding">
+            <span>A</span>
+            <a href="https://danielswork.shop"><img src="../assets/dw.svg" alt="DW"></a>
+            <span>PROJECT</span>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
